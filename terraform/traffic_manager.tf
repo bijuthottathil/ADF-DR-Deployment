@@ -16,19 +16,17 @@ resource "azurerm_traffic_manager_profile" "tm_profile" {
 }
 
 resource "azurerm_traffic_manager_external_endpoint" "primary" {
-  name       = "primary-endpoint"
-  profile_id = azurerm_traffic_manager_profile.tm_profile.id
-  target     = "adf-central-instance.centralus.datafactory.azure.net"
-  type       = "externalEndpoints"
-  endpoint_status = "Enabled"
-  priority   = 1
+  name             = "primary-endpoint"
+  profile_id       = azurerm_traffic_manager_profile.tm_profile.id
+  target           = "adf-central-instance.centralus.datafactory.azure.net"
+  endpoint_location = "Central US"
+  priority         = 1
 }
 
 resource "azurerm_traffic_manager_external_endpoint" "dr" {
-  name       = "dr-endpoint"
-  profile_id = azurerm_traffic_manager_profile.tm_profile.id
-  target     = "adf-east-instance.eastus.datafactory.azure.net"
-  type       = "externalEndpoints"
-  endpoint_status = "Enabled"
-  priority   = 2
+  name             = "dr-endpoint"
+  profile_id       = azurerm_traffic_manager_profile.tm_profile.id
+  target           = "adf-east-instance.eastus.datafactory.azure.net"
+  endpoint_location = "East US"
+  priority         = 2
 }
