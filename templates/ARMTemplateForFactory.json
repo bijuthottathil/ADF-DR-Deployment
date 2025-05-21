@@ -5,7 +5,15 @@
         "factoryName": {
             "type": "string",
             "metadata": "Data Factory name",
-            "defaultValue": "adf-east-instance"
+            "defaultValue": "adf-central-instance"
+        },
+        "lnkblobsource_connectionString": {
+            "type": "secureString",
+            "metadata": "Secure string for 'connectionString' of 'lnkblobsource'"
+        },
+        "lnkdestination_connectionString": {
+            "type": "secureString",
+            "metadata": "Secure string for 'connectionString' of 'lnkdestination'"
         }
     },
     "variables": {
@@ -13,44 +21,196 @@
     },
     "resources": [
         {
-            "name": "[concat(parameters('factoryName'), '/drtest')]",
+            "name": "[concat(parameters('factoryName'), '/Copycsvdata')]",
             "type": "Microsoft.DataFactory/factories/pipelines",
             "apiVersion": "2018-06-01",
             "properties": {
                 "activities": [
                     {
-                        "name": "Wait1",
-                        "type": "Wait",
+                        "name": "Copy csv data",
+                        "type": "Copy",
                         "dependsOn": [],
+                        "policy": {
+                            "timeout": "0.12:00:00",
+                            "retry": 0,
+                            "retryIntervalInSeconds": 30,
+                            "secureOutput": false,
+                            "secureInput": false
+                        },
                         "userProperties": [],
                         "typeProperties": {
-                            "waitTimeInSeconds": 1
-                        }
-                    },
-                    {
-                        "name": "Wait2",
-                        "type": "Wait",
-                        "dependsOn": [
+                            "source": {
+                                "type": "DelimitedTextSource",
+                                "storeSettings": {
+                                    "type": "AzureBlobStorageReadSettings",
+                                    "recursive": true,
+                                    "wildcardFileName": "*",
+                                    "enablePartitionDiscovery": false
+                                },
+                                "formatSettings": {
+                                    "type": "DelimitedTextReadSettings"
+                                }
+                            },
+                            "sink": {
+                                "type": "DelimitedTextSink",
+                                "storeSettings": {
+                                    "type": "AzureBlobStorageWriteSettings"
+                                },
+                                "formatSettings": {
+                                    "type": "DelimitedTextWriteSettings",
+                                    "quoteAllText": true,
+                                    "fileExtension": ".txt"
+                                }
+                            },
+                            "enableStaging": false,
+                            "translator": {
+                                "type": "TabularTranslator",
+                                "typeConversion": true,
+                                "typeConversionSettings": {
+                                    "allowDataTruncation": true,
+                                    "treatBooleanAsNumber": false
+                                }
+                            }
+                        },
+                        "inputs": [
                             {
-                                "activity": "Wait1",
-                                "dependencyConditions": [
-                                    "Succeeded"
-                                ]
+                                "referenceName": "dssourcecsv",
+                                "type": "DatasetReference",
+                                "parameters": {}
                             }
                         ],
-                        "userProperties": [],
-                        "typeProperties": {
-                            "waitTimeInSeconds": 1
-                        }
+                        "outputs": [
+                            {
+                                "referenceName": "dsdestinationcsv",
+                                "type": "DatasetReference",
+                                "parameters": {}
+                            }
+                        ]
                     }
                 ],
                 "policy": {
                     "elapsedTimeMetric": {}
                 },
                 "annotations": [],
-                "lastPublishTime": "2025-05-21T15:15:01Z"
+                "lastPublishTime": "2025-05-21T14:49:08Z"
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/datasets/dssourcecsv')]",
+                "[concat(variables('factoryId'), '/datasets/dsdestinationcsv')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/lnkblobsource')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "AzureBlobStorage",
+                "typeProperties": {
+                    "connectionString": "[parameters('lnkblobsource_connectionString')]"
+                }
             },
             "dependsOn": []
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/lnkdestination')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "AzureBlobStorage",
+                "typeProperties": {
+                    "connectionString": "[parameters('lnkdestination_connectionString')]"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/dssourcecsv')]",
+            "type": "Microsoft.DataFactory/factories/datasets",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "linkedServiceName": {
+                    "referenceName": "lnkblobsource",
+                    "type": "LinkedServiceReference"
+                },
+                "annotations": [],
+                "type": "DelimitedText",
+                "typeProperties": {
+                    "location": {
+                        "type": "AzureBlobStorageLocation",
+                        "container": "source"
+                    },
+                    "columnDelimiter": ",",
+                    "escapeChar": "\\",
+                    "firstRowAsHeader": true,
+                    "quoteChar": "\""
+                },
+                "schema": [
+                    {
+                        "name": "Region",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Country",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Sales_Rep",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Product",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Month",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Quantity_Sold",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Unit_Price",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Total_Revenue",
+                        "type": "String"
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/linkedServices/lnkblobsource')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/dsdestinationcsv')]",
+            "type": "Microsoft.DataFactory/factories/datasets",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "linkedServiceName": {
+                    "referenceName": "lnkdestination",
+                    "type": "LinkedServiceReference"
+                },
+                "annotations": [],
+                "type": "DelimitedText",
+                "typeProperties": {
+                    "location": {
+                        "type": "AzureBlobStorageLocation",
+                        "container": "destination"
+                    },
+                    "columnDelimiter": ",",
+                    "escapeChar": "\\",
+                    "firstRowAsHeader": true,
+                    "quoteChar": "\""
+                },
+                "schema": []
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/linkedServices/lnkdestination')]"
+            ]
         }
     ]
 }

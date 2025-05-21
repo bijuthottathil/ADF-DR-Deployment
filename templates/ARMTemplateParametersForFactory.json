@@ -3,7 +3,13 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "factoryName": {
-            "value": "adf-east-instance"
+            "value": "adf-central-instance"
+        },
+        "lnkblobsource_connectionString": {
+            "value": ""
+        },
+        "lnkdestination_connectionString": {
+            "value": ""
         }
     }
 }
