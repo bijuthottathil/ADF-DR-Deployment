@@ -31,7 +31,7 @@ jobs:
       - name: Deploy ADF ARM Template to DR
         uses: azure/arm-deploy@v1
         with:
-          scope: resourceGroup
+          scope: resourcegroup
           subscriptionId: "e3fe7a24-7f96-4d9e-bb03-a60836b78bbb"
           resourceGroupName: rg-adf-east
           template: ./templates/ARMTemplateForFactory.json
