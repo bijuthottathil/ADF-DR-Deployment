@@ -20,3 +20,4 @@ This project provisions:
 ## 📡 Traffic Manager URL
 
 Check DNS: `adfdr.trafficmanager.net`
+![image](https://github.com/user-attachments/assets/7f8b6fc7-a85f-4c7b-8213-21e996441b85)
