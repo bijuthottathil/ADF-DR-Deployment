@@ -1,4 +1,6 @@
 # Azure Data Factory DR with Terraform & GitHub Actions
+![image](https://github.com/user-attachments/assets/0f0b22bf-6a9e-4524-aa8c-ad93010a8541)
+
 
 This project provisions:
 - Primary & DR ADF in US Central & East
