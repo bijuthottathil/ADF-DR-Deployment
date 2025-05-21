@@ -1,4 +1,4 @@
-name: Deploy ADF to DR
+name: Deploy ARM Template
 
 on:
   workflow_dispatch:
