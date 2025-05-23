@@ -21,112 +21,7 @@
     },
     "resources": [
         {
-            "name": "[concat(parameters('factoryName'), '/Copycsvdata')]",
-            "type": "Microsoft.DataFactory/factories/pipelines",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "activities": [
-                    {
-                        "name": "Copy csv data",
-                        "type": "Copy",
-                        "dependsOn": [],
-                        "policy": {
-                            "timeout": "0.12:00:00",
-                            "retry": 0,
-                            "retryIntervalInSeconds": 30,
-                            "secureOutput": false,
-                            "secureInput": false
-                        },
-                        "userProperties": [],
-                        "typeProperties": {
-                            "source": {
-                                "type": "DelimitedTextSource",
-                                "storeSettings": {
-                                    "type": "AzureBlobStorageReadSettings",
-                                    "recursive": true,
-                                    "wildcardFileName": "*",
-                                    "enablePartitionDiscovery": false
-                                },
-                                "formatSettings": {
-                                    "type": "DelimitedTextReadSettings"
-                                }
-                            },
-                            "sink": {
-                                "type": "DelimitedTextSink",
-                                "storeSettings": {
-                                    "type": "AzureBlobStorageWriteSettings"
-                                },
-                                "formatSettings": {
-                                    "type": "DelimitedTextWriteSettings",
-                                    "quoteAllText": true,
-                                    "fileExtension": ".txt"
-                                }
-                            },
-                            "enableStaging": false,
-                            "translator": {
-                                "type": "TabularTranslator",
-                                "typeConversion": true,
-                                "typeConversionSettings": {
-                                    "allowDataTruncation": true,
-                                    "treatBooleanAsNumber": false
-                                }
-                            }
-                        },
-                        "inputs": [
-                            {
-                                "referenceName": "dssourcecsv",
-                                "type": "DatasetReference",
-                                "parameters": {}
-                            }
-                        ],
-                        "outputs": [
-                            {
-                                "referenceName": "dsdestinationcsv",
-                                "type": "DatasetReference",
-                                "parameters": {}
-                            }
-                        ]
-                    }
-                ],
-                "policy": {
-                    "elapsedTimeMetric": {}
-                },
-                "annotations": [],
-                "lastPublishTime": "2025-05-21T14:49:08Z"
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/datasets/dssourcecsv')]",
-                "[concat(variables('factoryId'), '/datasets/dsdestinationcsv')]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/lnkblobsource')]",
-            "type": "Microsoft.DataFactory/factories/linkedServices",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "annotations": [],
-                "type": "AzureBlobStorage",
-                "typeProperties": {
-                    "connectionString": "[parameters('lnkblobsource_connectionString')]"
-                }
-            },
-            "dependsOn": []
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/lnkdestination')]",
-            "type": "Microsoft.DataFactory/factories/linkedServices",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "annotations": [],
-                "type": "AzureBlobStorage",
-                "typeProperties": {
-                    "connectionString": "[parameters('lnkdestination_connectionString')]"
-                }
-            },
-            "dependsOn": []
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/dssourcecsv')]",
+            "name": "[concat(parameters('factoryName'), '/dssourcecsvnew')]",
             "type": "Microsoft.DataFactory/factories/datasets",
             "apiVersion": "2018-06-01",
             "properties": {
@@ -186,7 +81,7 @@
             ]
         },
         {
-            "name": "[concat(parameters('factoryName'), '/dsdestinationcsv')]",
+            "name": "[concat(parameters('factoryName'), '/dsdestinationcsvnew')]",
             "type": "Microsoft.DataFactory/factories/datasets",
             "apiVersion": "2018-06-01",
             "properties": {
@@ -210,6 +105,111 @@
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/linkedServices/lnkdestination')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/lnkblobsource')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "AzureBlobStorage",
+                "typeProperties": {
+                    "connectionString": "[parameters('lnkblobsource_connectionString')]"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/lnkdestination')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "AzureBlobStorage",
+                "typeProperties": {
+                    "connectionString": "[parameters('lnkdestination_connectionString')]"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/Copycsvdata_copy1')]",
+            "type": "Microsoft.DataFactory/factories/pipelines",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "activities": [
+                    {
+                        "name": "Copy csv data",
+                        "type": "Copy",
+                        "dependsOn": [],
+                        "policy": {
+                            "timeout": "0.12:00:00",
+                            "retry": 0,
+                            "retryIntervalInSeconds": 30,
+                            "secureOutput": false,
+                            "secureInput": false
+                        },
+                        "userProperties": [],
+                        "typeProperties": {
+                            "source": {
+                                "type": "DelimitedTextSource",
+                                "storeSettings": {
+                                    "type": "AzureBlobStorageReadSettings",
+                                    "recursive": true,
+                                    "wildcardFileName": "*",
+                                    "enablePartitionDiscovery": false
+                                },
+                                "formatSettings": {
+                                    "type": "DelimitedTextReadSettings"
+                                }
+                            },
+                            "sink": {
+                                "type": "DelimitedTextSink",
+                                "storeSettings": {
+                                    "type": "AzureBlobStorageWriteSettings"
+                                },
+                                "formatSettings": {
+                                    "type": "DelimitedTextWriteSettings",
+                                    "quoteAllText": true,
+                                    "fileExtension": ".txt"
+                                }
+                            },
+                            "enableStaging": false,
+                            "translator": {
+                                "type": "TabularTranslator",
+                                "typeConversion": true,
+                                "typeConversionSettings": {
+                                    "allowDataTruncation": true,
+                                    "treatBooleanAsNumber": false
+                                }
+                            }
+                        },
+                        "inputs": [
+                            {
+                                "referenceName": "dssourcecsvnew",
+                                "type": "DatasetReference",
+                                "parameters": {}
+                            }
+                        ],
+                        "outputs": [
+                            {
+                                "referenceName": "dsdestinationcsvnew",
+                                "type": "DatasetReference",
+                                "parameters": {}
+                            }
+                        ]
+                    }
+                ],
+                "policy": {
+                    "elapsedTimeMetric": {}
+                },
+                "annotations": [],
+                "lastPublishTime": "2025-05-21T18:29:55Z"
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/datasets/dssourcecsvnew')]",
+                "[concat(variables('factoryId'), '/datasets/dsdestinationcsvnew')]"
             ]
         }
     ]
